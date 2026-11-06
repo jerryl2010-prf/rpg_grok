@@ -20,22 +20,33 @@ def calcular_dano(ataque, defesa, critico=False):
     Se for um golpe crítico, o dano dobra.
     Exemplos: calcular_dano(18, 3) -> 15    calcular_dano(18, 3, True) -> 30
               calcular_dano(5, 12) -> 1"""
-    # TODO
-    raise NotImplementedError
+    if ataque-defesa<1:
+        dano = 1
+    elif critico==True:
+        dano = (ataque-defesa)*2
+    else:
+        dano = ataque-defesa
+    return dano
 
 
 def aplicar_dano(vida, dano):
     """Devolve a vida depois do golpe (nunca fica negativa).
     Exemplos: aplicar_dano(60, 15) -> 45    aplicar_dano(10, 15) -> 0"""
-    # TODO
-    raise NotImplementedError
+    if dano>vida:
+        vida = 0
+    else:
+        vida -= dano
+    return vida
 
 
 def curar(vida, vida_max, cura=30):
     """Devolve a vida depois de tomar uma poção (nunca passa de vida_max).
     Exemplos: curar(50, 100) -> 80    curar(90, 100) -> 100"""
-    # TODO
-    raise NotImplementedError
+    if vida+cura > vida_max:
+        vida = vida_max
+    else:
+        vida += cura
+    return vida
 
 
 def barra_de_vida(vida, vida_max, tamanho=10):
@@ -43,8 +54,8 @@ def barra_de_vida(vida, vida_max, tamanho=10):
         barra_de_vida(60, 100) -> "[######----] 60/100"
     Quantidade de '#':  vida * tamanho // vida_max   (o resto é '-')
     Use um laço for com range(tamanho)."""
-    # TODO
-    raise NotImplementedError
+    barra_de_vida = (vida*"#") + ((vida_max-vida)*"-")
+    return barra_de_vida
 
 
 def classificar_resultado(vida, vida_max):
@@ -53,8 +64,15 @@ def classificar_resultado(vida, vida_max):
         vida igual a vida_max       -> "Vitória perfeita"
         vida >= metade de vida_max  -> "Vitória"
         senão                       -> "Vitória apertada" """
-    # TODO: use if / elif / else
-    raise NotImplementedError
+    if vida == 0:
+        resultado = "Derrota"
+    elif vida == vida_max:
+        resultado = "Vitória perfeita"
+    elif vida >= vida_max/2:
+        resultado = "Vitória"
+    else:
+        resultado = "Vitória apertada"
+    return resultado
 
 
 def ler_acao():
@@ -62,8 +80,12 @@ def ler_acao():
     Devolve o texto digitado ("1", "2" ou "3").
         1 - Atacar   2 - Tomar poção   3 - Fugir
     Se digitar outra coisa, mostre "Ação inválida!" e pergunte de novo."""
-    # TODO: use while True e return
-    raise NotImplementedError
+    while True:
+        print("1 - Atacar   2 - Tomar poção   3 - Fugir")
+        acao = input("Ação: ")
+
+        if acao == '1' or acao == '2' or acao =='3':
+            return acao
 
 
 def batalha(heroi, inimigo, pocoes=3):
@@ -80,7 +102,7 @@ def batalha(heroi, inimigo, pocoes=3):
 
         acao = ler_acao()
         if acao == "1":
-            # TODO: 1) sorteie o crítico:  critico = random.randint(1, 10) == 10
+            # TODO: critico = random.randint(1, 10)
             #       2) calcule o dano com calcular_dano(ataque do herói, defesa do inimigo, critico)
             #       3) atualize a vida do inimigo com aplicar_dano
             #       4) mostre quanto de dano foi causado (avise se foi crítico)
