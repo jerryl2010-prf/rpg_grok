@@ -102,22 +102,34 @@ def batalha(heroi, inimigo, pocoes=3):
 
         acao = ler_acao()
         if acao == "1":
-            # TODO: critico = random.randint(1, 10)
-            #       2) calcule o dano com calcular_dano(ataque do herói, defesa do inimigo, critico)
-            #       3) atualize a vida do inimigo com aplicar_dano
-            #       4) mostre quanto de dano foi causado (avise se foi crítico)
-            pass
+            critico = random.randint(1, 10)
+            if critico==3:
+                critico=True
+            else:
+                critico=False
+            defesa = inimigo['defesa']
+            ataque = heroi['ataque']
+            dano = calcular_dano(ataque, defesa, critico)
+            vida = inimigo['vida']
+            inimigo['vida'] = aplicar_dano(vida, dano)
+            print(f"Dano: {dano}    |    Critíco: {critico}")
         elif acao == "2":
-            # TODO: se ainda houver poções: diminua 1, cure o herói com curar() e avise
-            #       quantas restam. Se não houver: mostre "Você não tem mais poções!"
-            pass
+            if heroi['pocao'] > 0:
+                curar((heroi['vida'], heroi['vida_max']), cura=30)
+                heroi['pocao'] -= 1
+                if heroi['pocao'] == 0:
+                    print("Suas poções acabaram!")
+                else:
+                    print(f"Você tem {heroi['pocao']} poção(ões)")
+            else:
+                print("Você não tem poções!")
         else:
-            # TODO: mostre que o herói fugiu e devolva (return) o dicionário com
-            #       "resultado": "fuga" (veja o formato no início desta função)
-            pass
-
-        # TODO: se o inimigo ainda estiver vivo, ele ataca o herói
-        #       (dano = calcular_dano(ataque do inimigo, defesa do herói), sem crítico)
+            print("O herói fugiu!")
+            resultado='fuga'
+            return resultado
+        
+        dano = calcular_dano(inimigo['ataque'], heroi['defesa'])
+        heroi['vida'] = aplicar_dano(heroi['vida'], dano)
 
     if heroi["vida"] > 0:
         resultado = "vitoria"
