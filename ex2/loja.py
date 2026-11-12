@@ -16,15 +16,15 @@ def buscar_item(catalogo, nome):
     """Procura o item pelo nome (sem diferenciar maiúsculas).
     Devolve o dicionário do item, ou None se não achar.
     Dica: percorra o catálogo com for e compare item["nome"].lower() com nome.lower()"""
-    # TODO
-    raise NotImplementedError
-
+    for item in catalogo:
+        if item["nome"].lower() == nome.lower():
+            return item["nome"].lower()
 
 def mostrar_catalogo(catalogo):
     """Mostra os itens da loja, numerados a partir de 1, por exemplo:
         1. Poção de Vida      Poção       15 moedas"""
-    # TODO
-    raise NotImplementedError
+    for indice, item in enumerate(catalogo, start=1):
+        print(f"{indice}. {item["nome"]}      {item["tipo"]}      {item["preco"]} moedas")
 
 
 def mostrar_inventario(heroi):
