@@ -19,6 +19,7 @@ def buscar_item(catalogo, nome):
     for item in catalogo:
         if item["nome"].lower() == nome.lower():
             return item["nome"].lower()
+    return None
 
 def mostrar_catalogo(catalogo):
     """Mostra os itens da loja, numerados a partir de 1, por exemplo:
@@ -50,8 +51,9 @@ def comprar(heroi, catalogo, nome, quantidade=1):
          Use o nome do CATÁLOGO (item["nome"]), não o que a pessoa digitou.
       6. Devolva f"Comprou {quantidade} x {item['nome']} por {custo} moedas."
     """
-    # TODO
-    raise NotImplementedError
+    if buscar_item(catalogo, nome) == None:
+        return print("Esse item não existe na loja.")
+    
 
 
 def vender(heroi, catalogo, nome, quantidade=1):
