@@ -22,10 +22,12 @@ def calcular_dano(ataque, defesa, critico=False):
               calcular_dano(5, 12) -> 1"""
     if ataque-defesa<1:
         dano = 1
-    elif critico==True:
-        dano = (ataque-defesa)*2
+        if critico:
+            dano = 2
     else:
         dano = ataque-defesa
+        if critico:
+            dano = dano*2
     return dano
 
 
@@ -54,7 +56,8 @@ def barra_de_vida(vida, vida_max, tamanho=10):
         barra_de_vida(60, 100) -> "[######----] 60/100"
     Quantidade de '#':  vida * tamanho // vida_max   (o resto é '-')
     Use um laço for com range(tamanho)."""
-    barra_de_vida = (vida*"#") + ((vida_max-vida)*"-")
+    inicio_barra = ((vida*tamanho)//vida_max)*"#"
+    barra_de_vida = f"[{inicio_barra}{((tamanho-len(inicio_barra))*"-")}] {vida}/{vida_max}"
     return barra_de_vida
 
 
