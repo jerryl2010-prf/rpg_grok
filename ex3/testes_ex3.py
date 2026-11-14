@@ -6,7 +6,7 @@ Os testes usam um banco em memória: o seu arena.db não é alterado.
 import os
 import tempfile
 
-import banco
+from ex3 import banco
 
 acertos = 0
 total = 0

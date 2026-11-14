@@ -59,7 +59,7 @@ def historico(conn, jogador):
 
     cursor = conn.cursor()
     cursor.execute("""
-    SELECT * FROM partidas WHERE jogador = ? ORDER BY id
+    SELECT id, inimigo, resultado, turnos, vida_restante, data FROM partidas WHERE jogador = ? ORDER BY id
     """, (jogador,))
 
     return cursor.fetchall()
@@ -70,23 +70,56 @@ def contar_resultados(conn, jogador):
         {"vitoria": 1, "derrota": 1, "fuga": 1}
     Faça com um laço for sobre historico(conn, jogador).
     (Na linha do histórico, o resultado é a posição [2].)"""
-    # TODO
-    raise NotImplementedError
 
+    resultados = {"vitoria": 0, "derrota": 0, "fuga": 0}
+
+    for partida in historico(conn, jogador):
+        if partida[2] == "vitoria":
+            resultados['vitoria'] += 1
+        elif partida[2] == "derrota":
+            resultados['derrota'] += 1
+        else:
+            resultados['fuga'] += 1
+
+    return resultados
 
 def ranking(conn, limite=5):
     """As melhores VITÓRIAS: quem terminou com mais vida fica na frente;
     se empatar, quem venceu em menos turnos.
     Cada linha: (jogador, inimigo, turnos, vida_restante)
     Dica: WHERE resultado = 'vitoria'  ORDER BY vida_restante DESC, turnos ASC  LIMIT ?"""
-    # TODO
-    raise NotImplementedError
+
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT jogador, inimigo, turnos, vida_restante
+        FROM partidas
+        WHERE resultado = 'vitoria' ORDER BY vida_restante DESC, turnos ASC LIMIT ?
+    """, (limite,))
+
+    return cursor.fetchall()
 
 
 def exportar_ranking(conn, caminho, limite=5):
     """DESAFIO: grava o ranking em um arquivo JSON e devolve a lista gravada.
     Cada posição vira um dicionário:
         {"posicao": 1, "jogador": "Carla", "inimigo": "Orc", "turnos": 8, "vida_restante": 90}
-    Use ranking(conn, limite) e arquivos.salvar_json(caminho, lista)."""
-    # TODO
-    raise NotImplementedError
+    Use ranking(conn, limite) e ex2.arquivos.salvar_json(caminho, lista)."""
+
+    dados = ranking(conn, limite)
+    rank = []
+
+    for posicao, partida in enumerate(dados, start=1):
+        registro = {
+            "posicao": posicao,
+            "jogador": partida[0],
+            "inimigo": partida[1],
+            "turnos": partida[2],
+            "vida_restante": partida[3]
+        }
+
+        rank.append(registro)
+
+    ex2.arquivos.salvar_json(caminho, rank)
+
+    return rank
