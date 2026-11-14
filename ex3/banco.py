@@ -9,7 +9,7 @@ exercício do RPG com banco de dados.
 import sqlite3
 from datetime import date
 
-import arquivos
+import ex2.arquivos
 
 NOME_ARQUIVO = "arena.db"
 
@@ -36,15 +36,33 @@ def registrar_partida(conn, jogador, inimigo, resultado, turnos, vida_restante, 
     """Grava uma partida (INSERT) e devolve o id gerado.
     Se data for None, use a data de hoje:  date.today().isoformat()  -> "2026-11-05"
     Não esqueça do conn.commit()."""
-    # TODO
-    raise NotImplementedError
+
+    if data is None:
+        data = date.today().isoformat()
+
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO partidas
+        (jogador, inimigo, resultado, turnos, vida_restante, data)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (jogador, inimigo, resultado, turnos, vida_restante, data))
+
+    conn.commit()
+
+    return cursor.lastrowid
 
 
 def historico(conn, jogador):
     """Lista as partidas de UM jogador, em ordem de id.
     Cada linha: (id, inimigo, resultado, turnos, vida_restante, data)"""
-    # TODO: SELECT ... FROM partidas WHERE jogador = ? ORDER BY id
-    raise NotImplementedError
+
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT * FROM partidas WHERE jogador = ? ORDER BY id
+    """, (jogador,))
+
+    return cursor.fetchall()
 
 
 def contar_resultados(conn, jogador):

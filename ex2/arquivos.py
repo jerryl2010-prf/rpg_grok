@@ -23,7 +23,7 @@ def carregar_json(caminho, padrao=None):
         with open(caminho, "r", encoding="utf-8") as arquivo:
             dados = json.load(arquivo)
             return dados
-    except os.path.exists(caminho) == False:
+    except FileNotFoundError:
         return padrao
 
 

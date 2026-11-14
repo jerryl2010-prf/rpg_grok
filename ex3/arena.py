@@ -7,8 +7,8 @@ Junta tudo o que foi feito:
   - banco.py    (Exercício 3) guarda cada partida no banco arena.db.
 """
 
-import arquivos
-import batalha
+import ex2.arquivos
+import ex1.batalha
 import banco
 
 ARQ_HEROI = "heroi.json"
@@ -38,7 +38,7 @@ def lutar(conn, heroi, inimigo):
     oponente["vida"] = inimigo["vida_max"]
 
     pocoes = heroi["inventario"].get(POCAO, 0)
-    final = batalha.batalha(lutador, oponente, pocoes)
+    final = ex1.batalha.batalha(lutador, oponente, pocoes)
 
     banco.registrar_partida(conn, heroi["nome"], inimigo["nome"], final["resultado"],
                             final["turnos"], final["vida_restante"])
@@ -52,7 +52,7 @@ def lutar(conn, heroi, inimigo):
     if final["resultado"] == "vitoria":
         heroi["ouro"] = heroi["ouro"] + inimigo["recompensa"]
         print(f"Você ganhou {inimigo['recompensa']} moedas! Agora tem {heroi['ouro']}.")
-    arquivos.salvar_json(ARQ_HEROI, heroi)
+    ex2.arquivos.salvar_json(ARQ_HEROI, heroi)
 
 
 def mostrar_ranking(conn):
@@ -66,11 +66,11 @@ def mostrar_ranking(conn):
 
 
 def main():
-    heroi = arquivos.carregar_json(ARQ_HEROI)
+    heroi = ex2.arquivos.carregar_json(ARQ_HEROI)
     if heroi is None:
         print("Não achei o heroi.json. Copie o seu herói do Exercício 2 para esta pasta.")
         return
-    inimigos = arquivos.carregar_json(ARQ_INIMIGOS, [])
+    inimigos = ex2.arquivos.carregar_json(ARQ_INIMIGOS, [])
     conn = banco.conectar()
 
     while True:

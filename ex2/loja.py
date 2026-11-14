@@ -17,15 +17,15 @@ def buscar_item(catalogo, nome):
     Devolve o dicionário do item, ou None se não achar.
     Dica: percorra o catálogo com for e compare item["nome"].lower() com nome.lower()"""
     for item in catalogo:
-        if item["nome"].lower() == nome.lower():
-            return item["nome"].lower()
+        if item['nome'].lower() == nome.lower():
+            return item
     return None
 
 def mostrar_catalogo(catalogo):
     """Mostra os itens da loja, numerados a partir de 1, por exemplo:
         1. Poção de Vida      Poção       15 moedas"""
     for indice, item in enumerate(catalogo, start=1):
-        print(f"{indice}. {item["nome"]}      {item["tipo"]}      {item["preco"]} moedas")
+        print(f"{indice}. {item['nome']}      {item['tipo']}      {item['preco']} moedas")
 
 
 def mostrar_inventario(heroi):
@@ -51,9 +51,20 @@ def comprar(heroi, catalogo, nome, quantidade=1):
          Use o nome do CATÁLOGO (item["nome"]), não o que a pessoa digitou.
       6. Devolva f"Comprou {quantidade} x {item['nome']} por {custo} moedas."
     """
-    if buscar_item(catalogo, nome) == None:
-        return print("Esse item não existe na loja.")
+    item = buscar_item(catalogo, nome)
+    if item is None:
+        return "Esse item não existe na loja."
+    elif quantidade < 1:
+        return "Quantidade inválida."
     
+    custo = item['preco']*quantidade
+    
+    if custo > heroi['ouro']:
+        return f"Ouro insuficiente: custa {custo} e você tem {heroi['ouro']}."
+    else:
+        heroi['ouro'] -= custo
+        heroi['inventario'][item['nome']] = heroi['inventario'].get(item['nome'], 0) + quantidade
+        return f"Comprou {quantidade} x {item['nome']} por {custo} moedas."
 
 
 def vender(heroi, catalogo, nome, quantidade=1):
@@ -68,5 +79,23 @@ def vender(heroi, catalogo, nome, quantidade=1):
       - Devolva f"Vendeu {quantidade} x {item['nome']} por {valor} moedas."
     Dica: heroi["inventario"].get(item["nome"], 0) dá 0 se o herói não tiver o item.
     """
-    # TODO
-    raise NotImplementedError
+    item = buscar_item(catalogo, nome)
+
+    if item is None:
+        return "Esse item não existe na loja."
+
+    tem = heroi["inventario"].get(item["nome"], 0)
+    
+    if quantidade < 1 or tem == 0 or quantidade > tem:
+        return f"Você só tem {tem} x {item['nome']}."
+    
+    custo = (item['preco']//2)*quantidade
+
+    heroi['ouro'] += custo
+    
+    if heroi['inventario'][item['nome']] - quantidade == 0:
+        del heroi['inventario'][item['nome']]
+    else:
+        heroi["inventario"][item["nome"]] -= quantidade
+
+    return f"Vendeu {quantidade} x {item['nome']} por {custo} moedas."
